@@ -1,23 +1,32 @@
+import Control.Applicative ((<$>))
+import Data.Maybe (catMaybes)
+import System.Environment (getArgs)
+
 import VM
 
 main :: IO ()
-main = putStrLn .show . takeResult $ machine
-    where machine = runVM instructions
+main = do args <- getArgs
+          case args of
+              ("run":path:_) -> run path
+              _              -> showHelp
 
-{- test instructions for:
--    a = 3 + 4
---   b = a + 3
---   b - a
--}
-instructions :: [Instruction]
-instructions = [ Push 3
-               , Push 4
-               , Add
-               , Store 0 -- end first line
-               , Read 0
-               , Push 3
-               , Add
-               , Store 1
-               , Read 1
-               , Read 0
-               , Sub ]
+run :: FilePath -> IO ()
+run path = do instructions <- readInstructions path
+              putStrLn .show . takeResult $ runVM instructions
+
+readInstructions :: FilePath -> IO [Instruction]
+readInstructions path = do content <- readFile path
+                           return $ read <$> ignoreComment (lines content)
+
+ignoreComment :: [String] -> [String]
+ignoreComment s = catMaybes $ skip <$> s
+            where skip ('#':_)  = Nothing
+                  skip str
+                    | null str  = Nothing
+                    | otherwise = Just str
+
+showHelp :: IO ()
+showHelp = do putStrLn "Usage:"
+              putStrLn "    hs-vm run PATH"
+
+
