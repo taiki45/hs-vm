@@ -11,8 +11,8 @@ module VM
 import Data.Monoid
 import Data.Foldable (foldMap)
 
-import Machine
-import Instruction
+import VM.Machine
+import VM.Instruction
 
 takeResult :: Machine -> Value
 takeResult (M reg _) = fetch reg

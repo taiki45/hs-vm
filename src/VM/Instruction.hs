@@ -1,4 +1,4 @@
-module Instruction
+module VM.Instruction
     ( Instruction
         ( Add
         , Sub
@@ -7,7 +7,7 @@ module Instruction
         , Push )
     , instMorph ) where
 
-import Machine
+import VM.Machine
 
 -- Instruction
 {- `3+4` compiled to:

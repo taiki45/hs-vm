@@ -1,5 +1,5 @@
 {-# LANGUAGE TupleSections #-}
-module Machine
+module VM.Machine
     ( Machine (M)
     , mapReg
     , mapMem
