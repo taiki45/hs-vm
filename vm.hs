@@ -25,14 +25,14 @@ type Value = Integer
 --   Push 4
 --   Add
 -}
-data Instraction = Add -- Add memory value to register value
+data Instruction = Add -- Add memory value to register value
                  | Sub -- Subtract register value with memory value
                  | Store Adress -- Store register value to memory
                  | Read Adress -- Push memory value to register
                  | Push Integer -- Push constant value to register
                  | Id
 
-instArrow :: Instraction -> Machine -> Machine
+instArrow :: Instruction -> Machine -> Machine
 instArrow Add (M r m) = undefined
 instArrow Sub (M r m) = undefined
 instArrow (Store i) (M r m) = undefined
@@ -50,13 +50,13 @@ init :: Machine
 init = M (0,0) (array (0,initMemSize) (initTuple <$> [0..initMemSize]))
     where initTuple = swap . (0,)
 
-{- test instractions for:
+{- test instructions for:
 -    a = 3 + 4
 --   b = a + 3
 --   b - a
 -}
-instractions :: [Instraction]
-instractions = [ Push 3
+instructions :: [Instruction]
+instructions = [ Push 3
                , Push 4
                , Add
                , Store 0 -- end first line
