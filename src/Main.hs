@@ -6,21 +6,19 @@ import Parser
 main :: IO ()
 main = do args <- getArgs
           case args of
-              ("run":path:_) -> run path
+              ("run":path:_) -> readFile path >>= run path
+              ("run":_)      -> getContents >>= run "STDIN"
               _              -> showHelp
 
-run :: FilePath -> IO ()
-run path = do instructions <- readInstructions path
-              putStrLn .show . takeResult $ runVM instructions
+run :: FilePath -> String -> IO ()
+run path content = do instructions <- readInstructions path content
+                      putStrLn .show . takeResult $ runVM instructions
 
-readInstructions :: FilePath -> IO [Instruction]
-readInstructions path = do content <- readFile path
-                           case parse instructionsParser path content of
-                               Left e  -> error $ show e
-                               Right v -> return v
+readInstructions :: String -> FilePath -> IO [Instruction]
+readInstructions path str = case parse instructionsParser path str of
+                                Left e  -> error $ show e
+                                Right v -> return v
 
 showHelp :: IO ()
 showHelp = do putStrLn "Usage:"
               putStrLn "    hs-vm run PATH"
-
-
