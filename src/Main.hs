@@ -1,6 +1,5 @@
 import VM
 
--- Runtime
 main :: IO ()
 main = putStrLn .show . takeResult $ machine
     where machine = runVM instructions
@@ -18,4 +17,7 @@ instructions = [ Push 3
                , Read 0
                , Push 3
                , Add
+               , Store 1
+               , Read 1
+               , Read 0
                , Sub ]
