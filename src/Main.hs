@@ -1,8 +1,7 @@
-import Control.Applicative ((<$>))
-import Data.Maybe (catMaybes)
 import System.Environment (getArgs)
 
 import VM
+import Parser
 
 main :: IO ()
 main = do args <- getArgs
@@ -16,14 +15,9 @@ run path = do instructions <- readInstructions path
 
 readInstructions :: FilePath -> IO [Instruction]
 readInstructions path = do content <- readFile path
-                           return $ read <$> ignoreComment (lines content)
-
-ignoreComment :: [String] -> [String]
-ignoreComment s = catMaybes $ skip <$> s
-            where skip ('#':_)  = Nothing
-                  skip str
-                    | null str  = Nothing
-                    | otherwise = Just str
+                           case parse instructionsParser path content of
+                               Left e  -> error $ show e
+                               Right v -> return v
 
 showHelp :: IO ()
 showHelp = do putStrLn "Usage:"

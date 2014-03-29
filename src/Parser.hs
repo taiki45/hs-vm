@@ -1,14 +1,15 @@
 module Parser
     ( parse
-    , instructions ) where
+    , instructionsParser ) where
 
 import Control.Applicative ((<$>), (<$))
 import Data.Maybe (catMaybes)
 import Text.ParserCombinators.Parsec
 import VM.Instruction
 
-instructions :: Parser [Instruction]
-instructions = catMaybes <$> (comment <|> instruction) `sepBy` many1 newline
+instructionsParser :: Parser [Instruction]
+instructionsParser = catMaybes <$> (comment <|> instruction <|> blank) `sepBy` many1 newline
+                where blank = Nothing <$ eof
 
 instruction :: Parser (Maybe Instruction)
 instruction = Just <$> (choice $ try <$> [add, sub, store, read', push])
