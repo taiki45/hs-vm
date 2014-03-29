@@ -76,5 +76,3 @@ type Value = Integer
 
 empty :: Value
 empty = 0
-
-
