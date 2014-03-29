@@ -20,15 +20,15 @@ type Adress = Integer
 type Value = Integer
 
 {- `3+4` compiled to:
---   Set 3
---   Set 4
+--   Push 3
+--   Push 4
 --   Add
 -}
 data Instraction = Add -- Add memory value to register value
                  | Sub -- Subtract register value with memory value
                  | Store Adress -- Store register value to memory
-                 | Push Adress -- Push memory value to register
-                 | Set Integer -- Push constant value to register
+                 | Read Adress -- Push memory value to register
+                 | Push Integer -- Push constant value to register
 
 main = undefined
 
@@ -40,5 +40,16 @@ init :: Machine
 init = M (0,0) (array (0,initMemSize) (initTuple <$> [0..initMemSize]))
     where initTuple = swap . (0,)
 
+{- a = 3 + 4
+-- b = a + 3
+-- b - a
+-}
 instractions :: [Instraction]
-instractions = undefined
+instractions = [ Push 3
+               , Push 4
+               , Add
+               , Store 0 -- end first line
+               , Read 0
+               , Push 3
+               , Add
+               , Sub ]
