@@ -2,8 +2,9 @@
 import Control.Applicative
 --import Control.Monad
 --import Control.Monad.State
-import Data.Tuple (swap)
 import Data.Array
+import Data.Tuple (swap)
+import Data.Monoid
 
 fstmap :: (a -> c) -> (a,b) -> (c,b)
 fstmap f = swap . fmap f . swap
@@ -29,6 +30,15 @@ data Instraction = Add -- Add memory value to register value
                  | Store Adress -- Store register value to memory
                  | Read Adress -- Push memory value to register
                  | Push Integer -- Push constant value to register
+                 | Id
+
+instArrow :: Instraction -> Machine -> Machine
+instArrow Add (M r m) = undefined
+instArrow Sub (M r m) = undefined
+instArrow (Store i) (M r m) = undefined
+instArrow (Read i) (M r m) = undefined
+instArrow (Push c) (M r m) = undefined
+instArrow Id m = m
 
 main = undefined
 
@@ -40,9 +50,10 @@ init :: Machine
 init = M (0,0) (array (0,initMemSize) (initTuple <$> [0..initMemSize]))
     where initTuple = swap . (0,)
 
-{- a = 3 + 4
--- b = a + 3
--- b - a
+{- test instractions for:
+-    a = 3 + 4
+--   b = a + 3
+--   b - a
 -}
 instractions :: [Instraction]
 instractions = [ Push 3
