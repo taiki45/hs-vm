@@ -39,10 +39,10 @@ initMachine = M initRegister initMem
 
 
 -- Register and functions
-type Register = (Integer,Integer)
+type Register = (Value,Value)
 
 updateReg :: Value -> Register -> Register
-updateReg v (_,z) = (v,z)
+updateReg v (_,z) = (z,v)
 
 fetch :: Register -> Value
 fetch (a,_) = a
