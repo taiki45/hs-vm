@@ -14,7 +14,7 @@ run :: FilePath -> String -> IO ()
 run path content = do instructions <- readInstructions path content
                       putStrLn .show . takeResult $ runVM instructions
 
-readInstructions :: String -> FilePath -> IO [Instruction]
+readInstructions :: FilePath -> String -> IO [Instruction]
 readInstructions path str = case parse instructionsParser path str of
                                 Left e  -> error $ show e
                                 Right v -> return v
