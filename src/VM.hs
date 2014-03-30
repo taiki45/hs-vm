@@ -1,10 +1,5 @@
 module VM
-    ( Instruction
-        ( Add
-        , Sub
-        , Store
-        , Read
-        , Push )
+    ( Instruction (..)
     , runVM
     , takeResult ) where
 

@@ -8,6 +8,7 @@ module VM.Machine
     , updateReg
     , fetch
     , appBinOp
+    , appF
     , initRegister
     , Mem
     , Adress
@@ -48,6 +49,12 @@ fetch (a,_) = a
 
 appBinOp :: (Value -> Value -> Value) -> Register -> Register
 appBinOp op (v,w) = (op v w, empty)
+
+appF :: (Value -> Value) -> Register -> Register
+appF = fstmap
+
+fstmap :: (a -> c) -> (a,b) -> (c,b)
+fstmap f = swap . fmap f . swap
 
 initRegister :: Register
 initRegister = (empty,empty)
