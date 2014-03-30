@@ -14,4 +14,4 @@ takeResult (M reg _) = fetch reg
 
 runVM :: [Instruction] -> Machine
 runVM ins = appEndo (compose ins) initMachine
-    where compose = foldMap (Endo . instMorph)
+    where compose = foldMap (Endo . instMorph) . reverse
