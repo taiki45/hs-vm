@@ -10,13 +10,13 @@ import VM.Machine
 --   Push 4
 --   Add
 -}
-data Instruction = Add -- Add memory value to register value
-                 | Sub -- Subtract register value with memory value
-                 | Lt -- Left value is less than the right value
-                 | Le -- left value <= right value
-                 | Gt -- Left value is greater than the right value
-                 | Ge -- left value >= right value
-                 | Eq -- Equal left value and right value
+data Instruction = Add -- Add register values
+                 | Sub -- Subtract register values
+                 | Lt -- Left register value is less than the right value
+                 | Le -- left register value <= right register value
+                 | Gt -- Left register value is greater than the right register value
+                 | Ge -- left register value >= right register value
+                 | Eq -- Equal left register value and right value
                  | Store Adress -- Store register value to memory
                  | Read Adress -- Push memory value to register
                  | Push Value -- Push constant value to register
