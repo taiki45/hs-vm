@@ -8,8 +8,7 @@ install:
   - cabal install --only-dependencies --enable-tests
 
 script:
-  - cabal configure --enable-tests && cabal build && cabal test
-  - hlint src
+  - cabal configure --enable-tests && cabal build && cabal test && hlint src
 
 notifications:
   email: false
