@@ -24,6 +24,10 @@ spec = do
                 it "parses" $ do
                     parseTest instructionsParser commentBetweenLines `shouldBe`
                         (Right $ [Push 5, Add])
+        describe "runVM" $ do
+            context "with normalInstructions" $ do
+                it "runs" $ do
+                    takeResult (runVM normalInstructions) `shouldBe` 3
 
 normalInstructionsString :: String
 normalInstructionsString = "Push 3\nAdd\nStore 4\n"
@@ -31,3 +35,19 @@ normalInstructionsString = "Push 3\nAdd\nStore 4\n"
 commentBetweenLines :: String
 commentBetweenLines = "# aaa\nPush 5\n# Add\nAdd\n#Push 5"
 
+-- test instructions for:
+--   a = 3 + 4
+--   b = a + 3
+--   b - a
+normalInstructions :: [Instruction]
+normalInstructions = [ Push 3
+                     , Push 4
+                     , Add
+                     , Store 0
+                     , Load 0
+                     , Push 3
+                     , Add
+                     , Store 1
+                     , Load 1
+                     , Load 0
+                     , Sub ]

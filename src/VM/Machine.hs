@@ -26,6 +26,7 @@ import Data.Tuple (swap)
 
 -- Machine and functions
 data Machine = M Register Mem
+             deriving Show
 
 mapReg :: (Register -> Register) -> Machine -> Machine
 f `mapReg` (M r m) = M (f r) m
