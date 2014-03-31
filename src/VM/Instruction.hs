@@ -20,7 +20,7 @@ data Instruction = Add -- Add register values
                  | Store Adress -- Store register value to memory
                  | Load Adress -- Push memory value to register
                  | Push Value -- Push constant value to register
-                 deriving (Show, Read)
+                 deriving (Show, Read, Eq)
 
 instMorph :: Instruction -> Machine -> Machine
 instMorph Add m = appBinOp (+) `mapReg` m
