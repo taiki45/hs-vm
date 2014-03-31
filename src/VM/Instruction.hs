@@ -38,5 +38,6 @@ boolToValue :: Bool -> Value
 boolToValue False = 0
 boolToValue True = 1
 
+-- compose binary operator and function to binary operator
 (<.>) :: (a -> Value) -> (Value -> Value -> a) -> Value -> Value -> Value
 (<.>) f op v w = f $ op v w
