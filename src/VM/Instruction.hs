@@ -31,7 +31,7 @@ instMorph Gt m = appBinOp (boolToValue <.> (>))  `mapReg` m
 instMorph Ge m = appBinOp (boolToValue <.> (>=)) `mapReg` m
 instMorph Eq m = appBinOp (boolToValue <.> (==)) `mapReg` m
 instMorph (Store i) m@(M r _) = updateMem i (fetch r) `mapMem` m
-instMorph (Load i) m@(M _ mem) = (updateReg $ fetchMem i mem) `mapReg` m
+instMorph (Load i) m@(M _ mem) = updateReg (fetchMem i mem) `mapReg` m
 instMorph (Push v) m = updateReg v `mapReg` m
 
 boolToValue :: Bool -> Value

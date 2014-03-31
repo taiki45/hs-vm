@@ -72,7 +72,7 @@ fetchMem :: Adress -> Mem -> Value
 fetchMem i m = m ! i
 
 initMem :: Mem
-initMem = (array (0,initMemSize) (initTuple <$> [0..initMemSize]))
+initMem = array (0,initMemSize) (initTuple <$> [0..initMemSize])
         where initTuple = swap . (empty,)
 
 initMemSize :: Integer

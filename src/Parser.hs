@@ -12,7 +12,7 @@ instructionsParser = catMaybes <$> (comment <|> instruction <|> blank) `sepBy` m
                 where blank = Nothing <$ eof
 
 instruction :: Parser (Maybe Instruction)
-instruction = Just <$> (choice $ try <$> [add, sub, store, read', push])
+instruction = Just <$> choice (try <$> [add, sub, store, read', push])
 
 add :: Parser Instruction
 add = Add <$ string "Add"

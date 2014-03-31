@@ -12,7 +12,7 @@ main = do args <- getArgs
 
 run :: FilePath -> String -> IO ()
 run path content = do instructions <- readInstructions path content
-                      putStrLn .show . takeResult $ runVM instructions
+                      print . takeResult $ runVM instructions
 
 readInstructions :: FilePath -> String -> IO [Instruction]
 readInstructions path str = case parse instructionsParser path str of
