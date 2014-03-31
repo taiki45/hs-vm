@@ -24,7 +24,7 @@ store :: Parser Instruction
 store = Store <$> instWithNumber "Store"
 
 read' :: Parser Instruction
-read' = Read <$> instWithNumber "Read"
+read' = Load <$> instWithNumber "Load"
 
 push :: Parser Instruction
 push = Push <$> instWithNumber "Push"

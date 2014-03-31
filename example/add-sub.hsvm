@@ -11,7 +11,7 @@ Add
 # (7,0)
 Store 0
 # (7,0)
-Read 0
+Load 0
 # (0,7)
 Push 3
 # (7,3)
@@ -19,9 +19,9 @@ Add
 # (10,0)
 Store 1
 # (10,0)
-Read 1
+Load 1
 # (0,10)
-Read 0
+Load 0
 # (10,7)
 Sub
 # (3,0)

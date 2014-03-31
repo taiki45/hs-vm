@@ -18,7 +18,7 @@ data Instruction = Add -- Add register values
                  | Ge -- left register value >= right register value
                  | Eq -- Equal left register value and right value
                  | Store Adress -- Store register value to memory
-                 | Read Adress -- Push memory value to register
+                 | Load Adress -- Push memory value to register
                  | Push Value -- Push constant value to register
                  deriving (Show, Read)
 
@@ -31,7 +31,7 @@ instMorph Gt m = appBinOp (boolToValue <.> (>))  `mapReg` m
 instMorph Ge m = appBinOp (boolToValue <.> (>=)) `mapReg` m
 instMorph Eq m = appBinOp (boolToValue <.> (==)) `mapReg` m
 instMorph (Store i) m@(M r _) = updateMem i (fetch r) `mapMem` m
-instMorph (Read i) m@(M _ mem) = (updateReg $ fetchMem i mem) `mapReg` m
+instMorph (Load i) m@(M _ mem) = (updateReg $ fetchMem i mem) `mapReg` m
 instMorph (Push v) m = updateReg v `mapReg` m
 
 boolToValue :: Bool -> Value
