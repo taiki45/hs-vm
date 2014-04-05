@@ -4,6 +4,7 @@ module VM.Instruction
 
 import VM.Machine
 
+-- TODO: add Label to set jump target easily
 -- Instruction
 {- `3+4` compiled to:
 --   Push 3

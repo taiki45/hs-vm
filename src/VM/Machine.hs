@@ -56,6 +56,7 @@ takePC :: Machine -> PC
 takePC (M _ _ c) = c
 
 
+-- TODO: use stack
 -- DataStack and functions
 type DataStack = (Value,Value)
 
