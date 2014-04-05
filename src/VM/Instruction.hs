@@ -10,29 +10,29 @@ import VM.Machine
 --   Push 4
 --   Add
 -}
-data Instruction = Add -- Add register values
-                 | Sub -- Subtract register values
-                 | Lt -- Left register value is less than the right value
-                 | Le -- left register value <= right register value
-                 | Gt -- Left register value is greater than the right register value
-                 | Ge -- left register value >= right register value
-                 | Eq -- Equal left register value and right value
-                 | Store Adress -- Store register value to memory
-                 | Load Adress -- Push memory value to register
-                 | Push Value -- Push constant value to register
+data Instruction = Add -- Add data stack values
+                 | Sub -- Subtract data stack values
+                 | Lt -- Left data stack value is less than the right value
+                 | Le -- left data stack value <= right data stack value
+                 | Gt -- Left data stack value is greater than the right data stack value
+                 | Ge -- left data stack value >= right data stack value
+                 | Eq -- Equal left data stack value and right value
+                 | Store Adress -- Store data stack value to memory
+                 | Load Adress -- Push memory value to data stack
+                 | Push Value -- Push constant value to data stack
                  deriving (Show, Read, Eq)
 
 instMorph :: Instruction -> Machine -> Machine
-instMorph Add m = appBinOp (+) `mapReg` m
-instMorph Sub m = appBinOp (-) `mapReg` m
-instMorph Lt m = appBinOp (boolToValue <.> (<))  `mapReg` m
-instMorph Le m = appBinOp (boolToValue <.> (<=)) `mapReg` m
-instMorph Gt m = appBinOp (boolToValue <.> (>))  `mapReg` m
-instMorph Ge m = appBinOp (boolToValue <.> (>=)) `mapReg` m
-instMorph Eq m = appBinOp (boolToValue <.> (==)) `mapReg` m
+instMorph Add m = appBinOp (+) `mapDS` m
+instMorph Sub m = appBinOp (-) `mapDS` m
+instMorph Lt m = appBinOp (boolToValue <.> (<))  `mapDS` m
+instMorph Le m = appBinOp (boolToValue <.> (<=)) `mapDS` m
+instMorph Gt m = appBinOp (boolToValue <.> (>))  `mapDS` m
+instMorph Ge m = appBinOp (boolToValue <.> (>=)) `mapDS` m
+instMorph Eq m = appBinOp (boolToValue <.> (==)) `mapDS` m
 instMorph (Store i) m@(M r _) = updateMem i (fetch r) `mapMem` m
-instMorph (Load i) m@(M _ mem) = updateReg (fetchMem i mem) `mapReg` m
-instMorph (Push v) m = updateReg v `mapReg` m
+instMorph (Load i) m@(M _ mem) = updateDS (fetchMem i mem) `mapDS` m
+instMorph (Push v) m = updateDS v `mapDS` m
 
 boolToValue :: Bool -> Value
 boolToValue False = 0

@@ -1,15 +1,15 @@
 {-# LANGUAGE TupleSections #-}
 module VM.Machine
     ( Machine (M)
-    , mapReg
+    , mapDS
     , mapMem
     , initMachine
-    , Register
-    , updateReg
+    , DataStack
+    , updateDS
     , fetch
     , appBinOp
     , appF
-    , initRegister
+    , initDataStack
     , Mem
     , Adress
     , updateMem
@@ -25,40 +25,40 @@ import Data.Tuple (swap)
 -- class Updatable
 
 -- Machine and functions
-data Machine = M Register Mem
+data Machine = M DataStack Mem
              deriving Show
 
-mapReg :: (Register -> Register) -> Machine -> Machine
-f `mapReg` (M r m) = M (f r) m
+mapDS :: (DataStack -> DataStack) -> Machine -> Machine
+f `mapDS` (M r m) = M (f r) m
 
 mapMem :: (Mem -> Mem) -> Machine -> Machine
 f `mapMem` (M r m) = M r (f m)
 
 -- initialize machine with empty value
 initMachine :: Machine
-initMachine = M initRegister initMem
+initMachine = M initDataStack initMem
 
 
--- Register and functions
-type Register = (Value,Value)
+-- DataStack and functions
+type DataStack = (Value,Value)
 
-updateReg :: Value -> Register -> Register
-updateReg v (_,z) = (z,v)
+updateDS :: Value -> DataStack -> DataStack
+updateDS v (_,z) = (z,v)
 
-fetch :: Register -> Value
+fetch :: DataStack -> Value
 fetch (a,_) = a
 
-appBinOp :: (Value -> Value -> Value) -> Register -> Register
+appBinOp :: (Value -> Value -> Value) -> DataStack -> DataStack
 appBinOp op (v,w) = (op v w, empty)
 
-appF :: (Value -> Value) -> Register -> Register
+appF :: (Value -> Value) -> DataStack -> DataStack
 appF = fstmap
 
 fstmap :: (a -> c) -> (a,b) -> (c,b)
 fstmap f = swap . fmap f . swap
 
-initRegister :: Register
-initRegister = (empty,empty)
+initDataStack :: DataStack
+initDataStack = (empty,empty)
 
 
 -- Memory and functions
