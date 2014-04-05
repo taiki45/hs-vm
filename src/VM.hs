@@ -1,7 +1,8 @@
 module VM
     ( Instruction (..)
     , runVM
-    , takeResult ) where
+    , takeResult
+    , takePC ) where
 
 import Data.Monoid
 import Data.Foldable (foldMap)

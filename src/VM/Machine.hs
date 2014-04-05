@@ -6,6 +6,7 @@ module VM.Machine
     , cup
     , initMachine
     , takeResult
+    , takePC
     , DataStack
     , push
     , fetch
@@ -45,6 +46,9 @@ initMachine = M initDataStack initMem initPC
 
 takeResult :: Machine -> Value
 takeResult (M ds _ _) = fetch ds
+
+takePC :: Machine -> PC
+takePC (M _ _ c) = c
 
 
 -- DataStack and functions

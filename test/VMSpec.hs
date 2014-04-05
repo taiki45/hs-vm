@@ -6,9 +6,13 @@ import VM
 
 spec :: Spec
 spec = describe "runVM" $
-            context "with normalInstructions" $
+            context "with normalInstructions" $ do
                 it "runs" $
                     takeResult (runVM normalInstructions) `shouldBe` 3
+                it "counts up PC" $
+                    fromInteger (takePC (runVM normalInstructions)) `shouldBe` length normalInstructions
+
+
 
 -- test instructions for:
 --   a = 3 + 4
