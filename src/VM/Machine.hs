@@ -5,7 +5,7 @@ module VM.Machine
     , mapMem
     , initMachine
     , DataStack
-    , updateDS
+    , push
     , fetch
     , appBinOp
     , appF
@@ -42,8 +42,8 @@ initMachine = M initDataStack initMem
 -- DataStack and functions
 type DataStack = (Value,Value)
 
-updateDS :: Value -> DataStack -> DataStack
-updateDS v (_,z) = (z,v)
+push :: Value -> DataStack -> DataStack
+push v (_,z) = (z,v)
 
 fetch :: DataStack -> Value
 fetch (a,_) = a
