@@ -56,27 +56,26 @@ takePC :: Machine -> PC
 takePC (M _ _ c) = c
 
 
--- TODO: use stack
 -- DataStack and functions
-type DataStack = (Value,Value)
+type DataStack = [Value]
 
 push :: Value -> DataStack -> DataStack
-push v (_,z) = (z,v)
+push v s = v:s
 
 fetch :: DataStack -> Value
-fetch (a,_) = a
+fetch (v:_) = v
 
 appBinOp :: (Value -> Value -> Value) -> DataStack -> DataStack
-appBinOp op (v,w) = (op v w, empty)
+appBinOp op (w:v:xs) = op v w : xs
 
 appF :: (Value -> Value) -> DataStack -> DataStack
 appF = fstmap
 
-fstmap :: (a -> c) -> (a,b) -> (c,b)
-fstmap f = swap . fmap f . swap
+fstmap :: (a -> a) -> [a] -> [a]
+fstmap f (x:xs) = f x : xs
 
 initDataStack :: DataStack
-initDataStack = (empty,empty)
+initDataStack = []
 
 
 -- Memory and functions

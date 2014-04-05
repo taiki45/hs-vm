@@ -8,7 +8,7 @@ spec :: Spec
 spec = describe "runVM" $ do
             context "with simpleInstructions" $
                 it "runs" $
-                    takeResult (runVM simpleInstructions) `shouldBe` 3
+                    takeResult (runVM simpleInstructions) `shouldBe` 4
             context "with normalInstructions" $ do
                 it "runs" $
                     takeResult (runVM normalInstructions) `shouldBe` 3
@@ -62,5 +62,4 @@ jumpInstructions = [ Push 0
                    , Push 10
                    , Lt
                    , JumpIf 7 -- second while condition
-                   , Load 0 -- a will be 10 #pc15
-                   , Push 0]
+                   , Load 0] -- a will be 10 #pc15
