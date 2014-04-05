@@ -23,16 +23,19 @@ data Instruction = Add -- Add data stack values
                  deriving (Show, Read, Eq)
 
 instMorph :: Instruction -> Machine -> Machine
-instMorph Add m = appBinOp (+) `mapDS` m
-instMorph Sub m = appBinOp (-) `mapDS` m
-instMorph Lt m = appBinOp (boolToValue <.> (<))  `mapDS` m
-instMorph Le m = appBinOp (boolToValue <.> (<=)) `mapDS` m
-instMorph Gt m = appBinOp (boolToValue <.> (>))  `mapDS` m
-instMorph Ge m = appBinOp (boolToValue <.> (>=)) `mapDS` m
-instMorph Eq m = appBinOp (boolToValue <.> (==)) `mapDS` m
-instMorph (Store i) m@(M r _ _) = updateMem i (fetch r) `mapMem` m
-instMorph (Load i) m@(M _ mem _) = push (fetchMem i mem) `mapDS` m
-instMorph (Push v) m = push v `mapDS` m
+instMorph i m = cup $ instMorph' i m
+
+instMorph' :: Instruction -> Machine -> Machine
+instMorph' Add m = appBinOp (+) `mapDS` m
+instMorph' Sub m = appBinOp (-) `mapDS` m
+instMorph' Lt m = appBinOp (boolToValue <.> (<))  `mapDS` m
+instMorph' Le m = appBinOp (boolToValue <.> (<=)) `mapDS` m
+instMorph' Gt m = appBinOp (boolToValue <.> (>))  `mapDS` m
+instMorph' Ge m = appBinOp (boolToValue <.> (>=)) `mapDS` m
+instMorph' Eq m = appBinOp (boolToValue <.> (==)) `mapDS` m
+instMorph' (Store i) m@(M r _ _) = updateMem i (fetch r) `mapMem` m
+instMorph' (Load i) m@(M _ mem _) = push (fetchMem i mem) `mapDS` m
+instMorph' (Push v) m = push v `mapDS` m
 
 boolToValue :: Bool -> Value
 boolToValue False = 0

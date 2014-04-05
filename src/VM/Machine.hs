@@ -3,6 +3,7 @@ module VM.Machine
     ( Machine (M)
     , mapDS
     , mapMem
+    , cup
     , initMachine
     , takeResult
     , DataStack
@@ -34,6 +35,9 @@ f `mapDS` (M r m c) = M (f r) m c
 
 mapMem :: (Mem -> Mem) -> Machine -> Machine
 f `mapMem` (M r m c) = M r (f m) c
+
+cup :: Machine -> Machine
+cup (M r m c) = M r m (countUp c)
 
 -- initialize machine with empty value
 initMachine :: Machine
@@ -85,6 +89,9 @@ initMemSize = 100
 
 -- Program counter
 type PC = Integer
+
+countUp :: PC -> PC
+countUp = (+1)
 
 initPC :: PC
 initPC = 0
