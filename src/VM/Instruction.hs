@@ -5,6 +5,7 @@ module VM.Instruction
 
 import VM.Machine
 
+-- TODO: add call and ret
 -- Instruction
 {- `3+4` compiled to:
 --   Push 3
