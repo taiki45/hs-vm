@@ -4,7 +4,6 @@ module VM.Instruction
 
 import VM.Machine
 
--- TODO: add Label to set jump target easily
 -- Instruction
 {- `3+4` compiled to:
 --   Push 3
@@ -22,6 +21,7 @@ data Instruction = Add -- Add data stack values.
                  | Store Adress -- Store data stack value to memory.
                  | Load Adress -- Push memory value to data stack.
                  | Push Value -- Push constant value to data stack.
+                 | Label LabelName
                  | Jump PC -- Unconditional jump.
                  | JumpIf PC -- Jump if first stack is non-zero.
                  deriving (Show, Read, Eq)
@@ -44,6 +44,7 @@ instMorph' Not m = appF notOp `mapDS` m
 instMorph' (Store i) m@(M r _ _ _) = updateMem i (fetch r) `mapMem` m
 instMorph' (Load i) m@(M _ mem _ _) = push (fetchMem i mem) `mapDS` m
 instMorph' (Push v) m = push v `mapDS` m
+instMorph' (Label n) m@(M _ _ c ls) = const (insertL n c ls) `mapLabels` m
 instMorph' (Jump c) m = setCounter c m
 instMorph' (JumpIf c) m@(M ds _ _ _)
     | fetch ds == 0 = cup m

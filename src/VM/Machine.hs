@@ -3,6 +3,7 @@ module VM.Machine
     ( Machine (M)
     , mapDS
     , mapMem
+    , mapLabels
     , cup
     , setCounter
     , initMachine
@@ -20,11 +21,16 @@ module VM.Machine
     , fetchMem
     , initMem
     , PC
+    , LabelName
+    , Labels
+    , insertL
+    , lookupL
     , Value) where
 
 import Control.Applicative hiding (empty)
 import Data.Array
 import qualified Data.Map as M
+import Data.Maybe
 import Data.Tuple (swap)
 
 -- class Fetchable
@@ -39,6 +45,9 @@ f `mapDS` (M r m c l) = M (f r) m c l
 
 mapMem :: (Mem -> Mem) -> Machine -> Machine
 f `mapMem` (M r m c l) = M r (f m) c l
+
+mapLabels :: (Labels -> Labels) -> Machine -> Machine
+f `mapLabels` (M r m c l) = M r m c (f l)
 
 cup :: Machine -> Machine
 cup (M r m c l) = M r m (countUp c) l
@@ -108,11 +117,17 @@ initPC = 0
 
 
 -- Label set
-type Label = String
-type Labels = M.Map Label PC
+type LabelName = String
+type Labels = M.Map LabelName PC
 
-initLabels :: M.Map Label PC
+initLabels :: M.Map LabelName PC
 initLabels = M.fromList []
+
+insertL :: LabelName -> PC -> Labels -> Labels
+insertL = M.insert
+
+lookupL :: LabelName -> Labels -> PC
+lookupL n l = fromJust $ M.lookup n l
 
 
 -- Value
