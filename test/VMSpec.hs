@@ -5,10 +5,9 @@ import Test.Hspec
 import VM
 
 spec :: Spec
-spec = do
-        describe "runVM" $ do
-            context "with normalInstructions" $ do
-                it "runs" $ do
+spec = describe "runVM" $
+            context "with normalInstructions" $
+                it "runs" $
                     takeResult (runVM normalInstructions) `shouldBe` 3
 
 -- test instructions for:

@@ -4,6 +4,7 @@ module VM.Machine
     , mapDS
     , mapMem
     , initMachine
+    , takeResult
     , DataStack
     , push
     , fetch
@@ -25,18 +26,21 @@ import Data.Tuple (swap)
 -- class Updatable
 
 -- Machine and functions
-data Machine = M DataStack Mem
+data Machine = M DataStack Mem PC
              deriving Show
 
 mapDS :: (DataStack -> DataStack) -> Machine -> Machine
-f `mapDS` (M r m) = M (f r) m
+f `mapDS` (M r m c) = M (f r) m c
 
 mapMem :: (Mem -> Mem) -> Machine -> Machine
-f `mapMem` (M r m) = M r (f m)
+f `mapMem` (M r m c) = M r (f m) c
 
 -- initialize machine with empty value
 initMachine :: Machine
-initMachine = M initDataStack initMem
+initMachine = M initDataStack initMem initPC
+
+takeResult :: Machine -> Value
+takeResult (M ds _ _) = fetch ds
 
 
 -- DataStack and functions
@@ -77,6 +81,13 @@ initMem = array (0,initMemSize) (initTuple <$> [0..initMemSize])
 
 initMemSize :: Integer
 initMemSize = 100
+
+
+-- Program counter
+type PC = Integer
+
+initPC :: PC
+initPC = 0
 
 
 -- Value

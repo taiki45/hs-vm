@@ -30,8 +30,8 @@ instMorph Le m = appBinOp (boolToValue <.> (<=)) `mapDS` m
 instMorph Gt m = appBinOp (boolToValue <.> (>))  `mapDS` m
 instMorph Ge m = appBinOp (boolToValue <.> (>=)) `mapDS` m
 instMorph Eq m = appBinOp (boolToValue <.> (==)) `mapDS` m
-instMorph (Store i) m@(M r _) = updateMem i (fetch r) `mapMem` m
-instMorph (Load i) m@(M _ mem) = push (fetchMem i mem) `mapDS` m
+instMorph (Store i) m@(M r _ _) = updateMem i (fetch r) `mapMem` m
+instMorph (Load i) m@(M _ mem _) = push (fetchMem i mem) `mapDS` m
 instMorph (Push v) m = push v `mapDS` m
 
 boolToValue :: Bool -> Value
