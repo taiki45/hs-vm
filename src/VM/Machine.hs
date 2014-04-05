@@ -4,6 +4,7 @@ module VM.Machine
     , mapDS
     , mapMem
     , cup
+    , setCounter
     , initMachine
     , takeResult
     , takePC
@@ -18,6 +19,7 @@ module VM.Machine
     , updateMem
     , fetchMem
     , initMem
+    , PC
     , Value) where
 
 import Control.Applicative hiding (empty)
@@ -39,6 +41,9 @@ f `mapMem` (M r m c) = M r (f m) c
 
 cup :: Machine -> Machine
 cup (M r m c) = M r m (countUp c)
+
+setCounter :: PC -> Machine -> Machine
+setCounter c (M r m _) = M r m c
 
 -- initialize machine with empty value
 initMachine :: Machine

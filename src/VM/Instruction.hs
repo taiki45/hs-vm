@@ -10,19 +10,25 @@ import VM.Machine
 --   Push 4
 --   Add
 -}
-data Instruction = Add -- Add data stack values
-                 | Sub -- Subtract data stack values
-                 | Lt -- Left data stack value is less than the right value
-                 | Le -- left data stack value <= right data stack value
-                 | Gt -- Left data stack value is greater than the right data stack value
-                 | Ge -- left data stack value >= right data stack value
-                 | Eq -- Equal left data stack value and right value
-                 | Store Adress -- Store data stack value to memory
-                 | Load Adress -- Push memory value to data stack
-                 | Push Value -- Push constant value to data stack
+data Instruction = Add -- Add data stack values.
+                 | Sub -- Subtract data stack values.
+                 | Lt -- first data stack value is less than the second value.
+                 | Le -- first data stack value <= second data stack value.
+                 | Gt -- first data stack value is greater than the second data stack value.
+                 | Ge -- first data stack value >= second data stack value.
+                 | Eq -- Equal left data stack value and second value.
+                 | Not -- Turn over bool. non-zero goes 0, 0 goes 1.
+                 | Store Adress -- Store data stack value to memory.
+                 | Load Adress -- Push memory value to data stack.
+                 | Push Value -- Push constant value to data stack.
+                 | Jump PC -- Unconditional jump.
+                 | JumpIf PC -- Jump if first stack is non-zero.
                  deriving (Show, Read, Eq)
 
+-- Don't count up PC if jump instructions are given
 instMorph :: Instruction -> Machine -> Machine
+instMorph i@(Jump _) m = instMorph' i m
+instMorph i@(JumpIf _) m = instMorph' i m
 instMorph i m = cup $ instMorph' i m
 
 instMorph' :: Instruction -> Machine -> Machine
@@ -33,13 +39,22 @@ instMorph' Le m = appBinOp (boolToValue <.> (<=)) `mapDS` m
 instMorph' Gt m = appBinOp (boolToValue <.> (>))  `mapDS` m
 instMorph' Ge m = appBinOp (boolToValue <.> (>=)) `mapDS` m
 instMorph' Eq m = appBinOp (boolToValue <.> (==)) `mapDS` m
+instMorph' Not m = appF notOp `mapDS` m
 instMorph' (Store i) m@(M r _ _) = updateMem i (fetch r) `mapMem` m
 instMorph' (Load i) m@(M _ mem _) = push (fetchMem i mem) `mapDS` m
 instMorph' (Push v) m = push v `mapDS` m
+instMorph' (Jump c) m = setCounter c m
+instMorph' (JumpIf c) m@(M ds _ _)
+    | fetch ds == 0 = cup m
+    | otherwise     = setCounter c m
 
 boolToValue :: Bool -> Value
 boolToValue False = 0
 boolToValue True = 1
+
+notOp :: Value -> Value
+notOp 0 = 1
+notOp _ = 0
 
 -- compose binary operator and function to binary operator
 (<.>) :: (a -> Value) -> (Value -> Value -> a) -> Value -> Value -> Value
