@@ -24,36 +24,37 @@ module VM.Machine
 
 import Control.Applicative hiding (empty)
 import Data.Array
+import qualified Data.Map as M
 import Data.Tuple (swap)
 
 -- class Fetchable
 -- class Updatable
 
 -- Machine and functions
-data Machine = M DataStack Mem PC
+data Machine = M DataStack Mem PC Labels
              deriving Show
 
 mapDS :: (DataStack -> DataStack) -> Machine -> Machine
-f `mapDS` (M r m c) = M (f r) m c
+f `mapDS` (M r m c l) = M (f r) m c l
 
 mapMem :: (Mem -> Mem) -> Machine -> Machine
-f `mapMem` (M r m c) = M r (f m) c
+f `mapMem` (M r m c l) = M r (f m) c l
 
 cup :: Machine -> Machine
-cup (M r m c) = M r m (countUp c)
+cup (M r m c l) = M r m (countUp c) l
 
 setCounter :: PC -> Machine -> Machine
-setCounter c (M r m _) = M r m c
+setCounter c (M r m _ l) = M r m c l
 
 -- initialize machine with empty value
 initMachine :: Machine
-initMachine = M initDataStack initMem initPC
+initMachine = M initDataStack initMem initPC initLabels
 
 takeResult :: Machine -> Value
-takeResult (M ds _ _) = fetch ds
+takeResult (M ds _ _ _) = fetch ds
 
 takePC :: Machine -> PC
-takePC (M _ _ c) = c
+takePC (M _ _ c _) = c
 
 
 -- DataStack and functions
@@ -104,6 +105,14 @@ countUp = (+1)
 
 initPC :: PC
 initPC = 0
+
+
+-- Label set
+type Label = String
+type Labels = M.Map Label PC
+
+initLabels :: M.Map Label PC
+initLabels = M.fromList []
 
 
 -- Value

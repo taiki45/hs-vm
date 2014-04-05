@@ -41,11 +41,11 @@ instMorph' Gt m = appBinOp (boolToValue <.> (>))  `mapDS` m
 instMorph' Ge m = appBinOp (boolToValue <.> (>=)) `mapDS` m
 instMorph' Eq m = appBinOp (boolToValue <.> (==)) `mapDS` m
 instMorph' Not m = appF notOp `mapDS` m
-instMorph' (Store i) m@(M r _ _) = updateMem i (fetch r) `mapMem` m
-instMorph' (Load i) m@(M _ mem _) = push (fetchMem i mem) `mapDS` m
+instMorph' (Store i) m@(M r _ _ _) = updateMem i (fetch r) `mapMem` m
+instMorph' (Load i) m@(M _ mem _ _) = push (fetchMem i mem) `mapDS` m
 instMorph' (Push v) m = push v `mapDS` m
 instMorph' (Jump c) m = setCounter c m
-instMorph' (JumpIf c) m@(M ds _ _)
+instMorph' (JumpIf c) m@(M ds _ _ _)
     | fetch ds == 0 = cup m
     | otherwise     = setCounter c m
 
