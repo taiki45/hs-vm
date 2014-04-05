@@ -5,7 +5,10 @@ import Test.Hspec
 import VM
 
 spec :: Spec
-spec = describe "runVM" $
+spec = describe "runVM" $ do
+            context "with simpleInstructions" $
+                it "runs" $
+                    takeResult (runVM simpleInstructions) `shouldBe` 3
             context "with normalInstructions" $ do
                 it "runs" $
                     takeResult (runVM normalInstructions) `shouldBe` 3
@@ -13,6 +16,9 @@ spec = describe "runVM" $
                     fromInteger (takePC (runVM normalInstructions)) `shouldBe` length normalInstructions
 
 
+simpleInstructions :: [Instruction]
+simpleInstructions = [ Push 3
+                     , Push 4]
 
 -- test instructions for:
 --   a = 3 + 4
