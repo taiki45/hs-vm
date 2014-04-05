@@ -53,7 +53,8 @@ jumpInstructions = [ Push 0
                    , Push 10
                    , Lt -- a < 10
                    , Not -- #pc5
-                   , JumpIf 16 -- first while condition
+                   , JumpIf "while end" -- first while condition
+                   , Label "body"
                    , Load 0
                    , Push 1
                    , Add
@@ -61,5 +62,6 @@ jumpInstructions = [ Push 0
                    , Load 0
                    , Push 10
                    , Lt
-                   , JumpIf 7 -- second while condition
+                   , JumpIf "body" -- second while condition
+                   , Label "while end"
                    , Load 0] -- a will be 10 #pc15

@@ -1,6 +1,7 @@
 module VM.Instruction
     ( Instruction (..)
-    , instMorph ) where
+    , instMorph
+    , setLabel ) where
 
 import VM.Machine
 
@@ -21,9 +22,9 @@ data Instruction = Add -- Add data stack values.
                  | Store Adress -- Store data stack value to memory.
                  | Load Adress -- Push memory value to data stack.
                  | Push Value -- Push constant value to data stack.
-                 | Label LabelName
-                 | Jump PC -- Unconditional jump.
-                 | JumpIf PC -- Jump if first stack is non-zero.
+                 | Label LabelName -- Set label and save current position.
+                 | Jump LabelName -- Unconditional jump.
+                 | JumpIf LabelName -- Jump if first stack is non-zero.
                  deriving (Show, Read, Eq)
 
 -- Don't count up PC if jump instructions are given
@@ -31,6 +32,10 @@ instMorph :: Instruction -> Machine -> Machine
 instMorph i@(Jump _) m = instMorph' i m
 instMorph i@(JumpIf _) m = instMorph' i m
 instMorph i m = cup $ instMorph' i m
+
+setLabel :: Instruction -> Machine -> Machine
+setLabel (Label n) m@(M _ _ c ls) = cup$ const (insertL n c ls) `mapLabels` m
+setLabel _ m = cup m
 
 instMorph' :: Instruction -> Machine -> Machine
 instMorph' Add m = appBinOp (+) `mapDS` m
@@ -44,11 +49,11 @@ instMorph' Not m = appF notOp `mapDS` m
 instMorph' (Store i) m@(M r _ _ _) = updateMem i (fetch r) `mapMem` m
 instMorph' (Load i) m@(M _ mem _ _) = push (fetchMem i mem) `mapDS` m
 instMorph' (Push v) m = push v `mapDS` m
-instMorph' (Label n) m@(M _ _ c ls) = const (insertL n c ls) `mapLabels` m
-instMorph' (Jump c) m = setCounter c m
-instMorph' (JumpIf c) m@(M ds _ _ _)
+instMorph' (Label _) m = m
+instMorph' (Jump n) m@(M _ _ _ ls) = setCounter (lookupL n ls) m
+instMorph' (JumpIf n) m@(M ds _ _ ls)
     | fetch ds == 0 = cup m
-    | otherwise     = setCounter c m
+    | otherwise     = setCounter (lookupL n ls) m
 
 boolToValue :: Bool -> Value
 boolToValue False = 0
