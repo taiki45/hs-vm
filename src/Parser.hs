@@ -24,8 +24,8 @@ instruction = Just <$> choice (try <$> [ add
                                        , load
                                        , push
                                        , label
-                                       , jump
-                                       , jumpIf ])
+                                       , jumpIf
+                                       , jump ])
 
 add :: Parser Instruction
 add = Add <$ string "Add"
@@ -73,7 +73,9 @@ instWithNumber :: String ->  Parser Integer
 instWithNumber s = read <$> (string s >> spaces >> many1 digit)
 
 instWithString :: String -> Parser String
-instWithString s = string s >> spaces >> many (try $ noneOf "\n")
+instWithString s = string s
+                    >> spaces
+                    >> many1 (noneOf "\n")
 
 comment :: Parser (Maybe Instruction)
 comment = char '#' >> many (noneOf "\n") >> return Nothing
