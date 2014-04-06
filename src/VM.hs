@@ -20,10 +20,10 @@ setMain m = setCounter main m
         where main = lookupL "main" $ takeL m
 
 run :: Array PC (Machine -> Machine) -> Machine -> Machine
-run is m | end pc = is ! pc $ m
+run is m | end pc = m
          | otherwise = run is (is ! pc $ m)
         where pc = fromInteger . takePC $ m
-              end = ((snd . bounds) is - 1 ==)
+              end = ((snd . bounds) is ==)
 
 prepare :: [Instruction] -> Machine -> Machine
 prepare is = appEndo . getDual $ foldMap (Dual . Endo . setLabel) is

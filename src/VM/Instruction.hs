@@ -33,6 +33,8 @@ data Instruction = Add -- Add data stack values.
 instMorph :: Instruction -> Machine -> Machine
 instMorph i@(Jump _) m = instMorph' i m
 instMorph i@(JumpIf _) m = instMorph' i m
+instMorph i@(Call _) m = instMorph' i m
+instMorph Ret m = instMorph' Ret m
 instMorph i m = cup $ instMorph' i m
 
 setLabel :: Instruction -> Machine -> Machine
@@ -58,6 +60,11 @@ instMorph' (Jump n) m = setCounter (lookupL n $ takeL m) m
 instMorph' (JumpIf n) m
     | fetch (takeDS m) == 0 = cup m
     | otherwise             = setCounter (lookupL n $ takeL m) m
+instMorph' (Call n) m = setCounter target . pushCS current $ m
+        where current = takePC m
+              target = lookupL n $ takeL m
+instMorph' Ret m = setCounter (inc callpoint) m'
+        where (callpoint, m') = popCS m
 
 boolToValue :: Bool -> Value
 boolToValue False = 0

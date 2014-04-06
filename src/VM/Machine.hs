@@ -22,6 +22,7 @@ module VM.Machine
     , fetchMem
     , initMem
     , PC
+    , inc
     , LabelName
     , Labels
     , insertL
@@ -54,7 +55,7 @@ mapLabels :: (Labels -> Labels) -> Machine -> Machine
 f `mapLabels` (M ds m c cs l) = M ds m c cs (f l)
 
 cup :: Machine -> Machine
-cup (M ds m c cs l) = M ds m (countUp c) cs l
+cup (M ds m c cs l) = M ds m (inc c) cs l
 
 setCounter :: PC -> Machine -> Machine
 setCounter c (M ds m _ cs l) = M ds m c cs l
@@ -62,8 +63,8 @@ setCounter c (M ds m _ cs l) = M ds m c cs l
 pushCS :: PC -> Machine -> Machine
 pushCS c (M ds m pc cs l) = M ds m pc (c:cs) l
 
-popCS :: Machine -> Machine
-popCS (M ds m _ (c:cs) l) = M ds m c cs l
+popCS :: Machine -> (PC, Machine)
+popCS (M ds m pc (c:cs) l) = (c,M ds m pc cs l)
 
 -- initialize machine with empty value
 initMachine :: Machine
@@ -116,8 +117,8 @@ initMemSize = 100
 -- Program counter
 type PC = Integer
 
-countUp :: PC -> PC
-countUp = (+1)
+inc :: PC -> PC
+inc = (+1)
 
 initPC :: PC
 initPC = 0

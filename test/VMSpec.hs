@@ -19,6 +19,9 @@ spec = describe "runVM" $ do
                     takeResult (runVM jumpInstructions) `shouldBe` 10
                 it "set and counts up PC" $
                     fromInteger (takePC (runVM jumpInstructions)) `shouldBe` length jumpInstructions
+            context "with functionCallInstructions" $
+                it "runs" $
+                    takeResult (runVM functionCallInstructions) `shouldBe` 12
 
 
 simpleInstructions :: [Instruction]
@@ -68,3 +71,17 @@ jumpInstructions = [ Label "main"
                    , JumpIf "body" -- second while condition
                    , Label "while end"
                    , Load 0] -- a will be 10 #pc15
+
+functionCallInstructions :: [Instruction]
+functionCallInstructions = [ Label "add_three"
+                           , Push 3 -- [3,4]
+                           , Add -- [7]
+                           , Ret
+                           , Label "add_five"
+                           , Push 5 -- [5,7]
+                           , Add -- [12]
+                           , Ret
+                           , Label "main"
+                           , Push 4 -- [4]
+                           , Call "add_three"
+                           , Call "add_five"] -- shouldBe [12]
