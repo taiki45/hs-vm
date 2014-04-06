@@ -45,7 +45,7 @@ testRun is m = do m' <- m
                     else testRun is (return (is ! pc $ m'))
 
 runDebugger :: PC -> Machine -> IO String
-runDebugger pc m = do putStrLn $ "[DEUBG] Now in " ++ show pc ++ " | input command"
+runDebugger pc m = do putStrLn $ "[DEUBG] Now in " ++ show pc ++ " | ds: " ++ show ds ++ " | input command"
                       putStr "> "
                       input <- getLine
                       case input of
@@ -55,5 +55,7 @@ runDebugger pc m = do putStrLn $ "[DEUBG] Now in " ++ show pc ++ " | input comma
                           "print cs" -> print (takeCS m) >> runDebugger pc m
                           "print labels" -> print (takeL m) >> runDebugger pc m
                           "next" -> return ""
+                          "" -> return ""
                           "exit" -> return "exit"
                           _ -> runDebugger pc m
+                where ds = takeDS m
