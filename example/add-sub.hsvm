@@ -2,7 +2,7 @@
 #   a = 3 + 4
 #   b = a + 3
 #   b - a
-
+Label main
 Push 3
 # (0,3)
 Push 4
