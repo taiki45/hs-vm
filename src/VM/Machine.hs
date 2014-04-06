@@ -1,6 +1,6 @@
 {-# LANGUAGE TupleSections #-}
 module VM.Machine
-    ( Machine (M)
+    ( Machine (..)
     , mapDS
     , mapMem
     , mapLabels
@@ -8,7 +8,6 @@ module VM.Machine
     , setCounter
     , initMachine
     , takeResult
-    , takePC
     , DataStack
     , push
     , fetch
@@ -37,7 +36,11 @@ import Data.Tuple (swap)
 -- class Updatable
 
 -- Machine and functions
-data Machine = M DataStack Mem PC Labels
+data Machine = M
+                { takeDS :: DataStack
+                , takeMem :: Mem
+                , takePC :: PC
+                , takeL :: Labels }
              deriving Show
 
 mapDS :: (DataStack -> DataStack) -> Machine -> Machine
@@ -60,10 +63,7 @@ initMachine :: Machine
 initMachine = M initDataStack initMem initPC initLabels
 
 takeResult :: Machine -> Value
-takeResult (M ds _ _ _) = fetch ds
-
-takePC :: Machine -> PC
-takePC (M _ _ c _) = c
+takeResult m = fetch $ takeDS m
 
 
 -- DataStack and functions

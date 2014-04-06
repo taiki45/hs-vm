@@ -47,14 +47,14 @@ instMorph' Gt m = appBinOp (boolToValue <.> (>))  `mapDS` m
 instMorph' Ge m = appBinOp (boolToValue <.> (>=)) `mapDS` m
 instMorph' Eq m = appBinOp (boolToValue <.> (==)) `mapDS` m
 instMorph' Not m = appF notOp `mapDS` m
-instMorph' (Store i) m@(M r _ _ _) = updateMem i (fetch r) `mapMem` m
-instMorph' (Load i) m@(M _ mem _ _) = push (fetchMem i mem) `mapDS` m
+instMorph' (Store i) m = updateMem i (fetch $ takeDS m) `mapMem` m
+instMorph' (Load i) m = push (fetchMem i $ takeMem m) `mapDS` m
 instMorph' (Push v) m = push v `mapDS` m
 instMorph' (Label _) m = m
-instMorph' (Jump n) m@(M _ _ _ ls) = setCounter (lookupL n ls) m
-instMorph' (JumpIf n) m@(M ds _ _ ls)
-    | fetch ds == 0 = cup m
-    | otherwise     = setCounter (lookupL n ls) m
+instMorph' (Jump n) m = setCounter (lookupL n $ takeL m) m
+instMorph' (JumpIf n) m
+    | fetch (takeDS m) == 0 = cup m
+    | otherwise             = setCounter (lookupL n $ takeL m) m
 
 boolToValue :: Bool -> Value
 boolToValue False = 0
