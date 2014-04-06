@@ -23,9 +23,12 @@ instruction = Just <$> choice (try <$> [ add
                                        , store
                                        , load
                                        , push
+                                       , pop
                                        , label
                                        , jumpIf
-                                       , jump ])
+                                       , jump
+                                       , call
+                                       , ret ])
 
 add :: Parser Instruction
 add = Add <$ string "Add"
@@ -60,6 +63,9 @@ load = Load <$> instWithNumber "Load"
 push :: Parser Instruction
 push = Push <$> instWithNumber "Push"
 
+pop :: Parser Instruction
+pop = Pop <$ string "Pop"
+
 label :: Parser Instruction
 label = Label <$> instWithString "Label"
 
@@ -68,6 +74,12 @@ jump = Jump <$> instWithString "Jump"
 
 jumpIf :: Parser Instruction
 jumpIf = JumpIf <$> instWithString "JumpIf"
+
+call :: Parser Instruction
+call = Call <$> instWithString "Call"
+
+ret :: Parser Instruction
+ret = Ret <$ string "Ret"
 
 instWithNumber :: String ->  Parser Integer
 instWithNumber s = read <$> (string s >> spaces >> many1 digit)
