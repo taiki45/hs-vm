@@ -58,22 +58,22 @@ jumpInstructions :: [Instruction]
 jumpInstructions = [ Label "main"
                    , Push 0
                    , Store 0 -- a = 0
+                   , Label "while start"
                    , Load 0
                    , Push 10
                    , Lt -- a < 10
-                   , Not -- #pc5
-                   , JumpIf "while end" -- first while condition
-                   , Label "body"
+                   , Not
+                   , JumpIf "while end"
                    , Load 0
                    , Push 1
                    , Add
-                   , Store 0 -- a += 1 #pc10
+                   , Store 0 -- a += 1
                    , Load 0
                    , Push 10
                    , Lt
-                   , JumpIf "body" -- second while condition
+                   , JumpIf "while start"
                    , Label "while end"
-                   , Load 0] -- a will be 10 #pc15
+                   , Load 0] -- a will be 10
 
 -- def add_three(x)
 --   x + 3
@@ -122,21 +122,17 @@ fibInstructions = [ Label "fib"
                   , Eq -- n == 0
                   , Not
                   , JumpIf "fib if2"
-                  , Pop
                   , Push 0
                   , Ret -- return in first body
                   , Label "fib if2"
-                  , Pop -- discard Eq result
                   , Load 0 -- set n
                   , Push 1
                   , Eq
                   , Not
                   , JumpIf "fib if3"
-                  , Pop -- discard Eq result
                   , Push 1
                   , Ret -- return in second body
                   , Label "fib if3"
-                  , Pop -- discard Eq result
                   , Load 0
                   , Push 1
                   , Sub
