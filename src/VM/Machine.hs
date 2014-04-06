@@ -32,8 +32,6 @@ import qualified Data.Map as M
 import Data.Maybe
 import Data.Tuple (swap)
 
--- class Fetchable
--- class Updatable
 
 -- Machine and functions
 data Machine = M
