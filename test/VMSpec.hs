@@ -109,7 +109,7 @@ functionCallInstructions = [ Label "add_three"
 --   fib(10) -- shouldBe 55
 fibInstructions :: [Instruction]
 fibInstructions = [ Label "fib"
-                  , Store 0 -- store argument `n`
+                  , Store 0
                   , Push 0
                   , Eq
                   , Not
@@ -117,7 +117,6 @@ fibInstructions = [ Label "fib"
                   , Push 0
                   , Ret -- return in first body
                   , Label "fib if2"
-                  , Load 0 -- push `n` value
                   , Push 1
                   , Eq
                   , Not
@@ -125,20 +124,16 @@ fibInstructions = [ Label "fib"
                   , Push 1
                   , Ret -- return in second body
                   , Label "fib if3"
-                  , Load 0
                   , Push 1
                   , Sub
                   , Call "fib"
-                  , Store 1 -- tmp storing for `fib(n - 1)`
-                  , Load 0
                   , Push 2
                   , Sub
                   , Call "fib"
-                  , Store 2 -- tmp storing for `fib(n - 2)`
-                  , Load 1
-                  , Load 2
                   , Add
                   , Ret
                   , Label "main"
                   , Push 2
+                  , Store 0
+                  , Pop
                   , Call "fib"] -- shouldBe 55
