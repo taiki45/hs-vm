@@ -72,6 +72,14 @@ jumpInstructions = [ Label "main"
                    , Label "while end"
                    , Load 0] -- a will be 10 #pc15
 
+-- def add_three(x)
+--   x + 3
+--
+-- def add_five(x)
+--   x + 5
+--
+-- def main
+--   add_five(add_three(4))
 functionCallInstructions :: [Instruction]
 functionCallInstructions = [ Label "add_three"
                            , Push 3 -- [3,4]
