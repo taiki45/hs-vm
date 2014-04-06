@@ -42,19 +42,19 @@ data Machine = M
              deriving Show
 
 mapDS :: (DataStack -> DataStack) -> Machine -> Machine
-f `mapDS` (M r m c l) = M (f r) m c l
+f `mapDS` (M ds m c l) = M (f ds) m c l
 
 mapMem :: (Mem -> Mem) -> Machine -> Machine
-f `mapMem` (M r m c l) = M r (f m) c l
+f `mapMem` (M ds m c l) = M ds (f m) c l
 
 mapLabels :: (Labels -> Labels) -> Machine -> Machine
-f `mapLabels` (M r m c l) = M r m c (f l)
+f `mapLabels` (M ds m c l) = M ds m c (f l)
 
 cup :: Machine -> Machine
-cup (M r m c l) = M r m (countUp c) l
+cup (M ds m c l) = M ds m (countUp c) l
 
 setCounter :: PC -> Machine -> Machine
-setCounter c (M r m _ l) = M r m c l
+setCounter c (M ds m _ l) = M ds m c l
 
 -- initialize machine with empty value
 initMachine :: Machine
