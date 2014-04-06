@@ -6,6 +6,8 @@ module VM.Machine
     , mapLabels
     , cup
     , setCounter
+    , pushCS
+    , popCS
     , initMachine
     , takeResult
     , DataStack
@@ -38,27 +40,34 @@ data Machine = M
                 { takeDS :: DataStack
                 , takeMem :: Mem
                 , takePC :: PC
+                , takeCS :: CS
                 , takeL :: Labels }
              deriving Show
 
 mapDS :: (DataStack -> DataStack) -> Machine -> Machine
-f `mapDS` (M ds m c l) = M (f ds) m c l
+f `mapDS` (M ds m c cs l) = M (f ds) m c cs l
 
 mapMem :: (Mem -> Mem) -> Machine -> Machine
-f `mapMem` (M ds m c l) = M ds (f m) c l
+f `mapMem` (M ds m c cs l) = M ds (f m) c cs l
 
 mapLabels :: (Labels -> Labels) -> Machine -> Machine
-f `mapLabels` (M ds m c l) = M ds m c (f l)
+f `mapLabels` (M ds m c cs l) = M ds m c cs (f l)
 
 cup :: Machine -> Machine
-cup (M ds m c l) = M ds m (countUp c) l
+cup (M ds m c cs l) = M ds m (countUp c) cs l
 
 setCounter :: PC -> Machine -> Machine
-setCounter c (M ds m _ l) = M ds m c l
+setCounter c (M ds m _ cs l) = M ds m c cs l
+
+pushCS :: PC -> Machine -> Machine
+pushCS c (M ds m pc cs l) = M ds m pc (c:cs) l
+
+popCS :: Machine -> Machine
+popCS (M ds m _ (c:cs) l) = M ds m c cs l
 
 -- initialize machine with empty value
 initMachine :: Machine
-initMachine = M initDataStack initMem initPC initLabels
+initMachine = M initDataStack initMem initPC initCS initLabels
 
 takeResult :: Machine -> Value
 takeResult m = fetch $ takeDS m
@@ -112,6 +121,13 @@ countUp = (+1)
 
 initPC :: PC
 initPC = 0
+
+
+-- Call stack
+type CS = [PC]
+
+initCS :: CS
+initCS = []
 
 
 -- Label set

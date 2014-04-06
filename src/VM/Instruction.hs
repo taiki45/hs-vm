@@ -5,7 +5,6 @@ module VM.Instruction
 
 import VM.Machine
 
--- TODO: add call and ret
 -- Instruction
 {- `3+4` compiled to:
 --   Push 3
@@ -26,6 +25,8 @@ data Instruction = Add -- Add data stack values.
                  | Label LabelName -- Set label and save current position.
                  | Jump LabelName -- Unconditional jump.
                  | JumpIf LabelName -- Jump if first stack is non-zero.
+                 | Call LabelName -- Store current PC and jump to function.
+                 | Ret -- Return from calling point.
                  deriving (Show, Read, Eq)
 
 -- Don't count up PC if jump instructions are given
@@ -35,7 +36,9 @@ instMorph i@(JumpIf _) m = instMorph' i m
 instMorph i m = cup $ instMorph' i m
 
 setLabel :: Instruction -> Machine -> Machine
-setLabel (Label n) m@(M _ _ c ls) = cup$ const (insertL n c ls) `mapLabels` m
+setLabel (Label n) m = cup$ const (insertL n c ls) `mapLabels` m
+    where c  = takePC m
+          ls = takeL m
 setLabel _ m = cup m
 
 instMorph' :: Instruction -> Machine -> Machine
