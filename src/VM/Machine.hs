@@ -12,6 +12,7 @@ module VM.Machine
     , takeResult
     , DataStack
     , push
+    , pop
     , fetch
     , appBinOp
     , appF
@@ -79,6 +80,10 @@ type DataStack = [Value]
 
 push :: Value -> DataStack -> DataStack
 push v s = v:s
+
+pop :: DataStack -> DataStack
+pop (_:xs) = xs
+pop _ = error "in pop"
 
 fetch :: DataStack -> Value
 fetch (v:_) = v

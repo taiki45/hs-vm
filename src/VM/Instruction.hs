@@ -22,6 +22,7 @@ data Instruction = Add -- Add data stack values.
                  | Store Adress -- Store data stack value to memory.
                  | Load Adress -- Push memory value to data stack.
                  | Push Value -- Push constant value to data stack.
+                 | Pop -- Pop and discard value from data stack.
                  | Label LabelName -- Set label and save current position.
                  | Jump LabelName -- Unconditional jump.
                  | JumpIf LabelName -- Jump if first stack is non-zero.
@@ -55,6 +56,7 @@ instMorph' Not m = appF notOp `mapDS` m
 instMorph' (Store i) m = updateMem i (fetch $ takeDS m) `mapMem` m
 instMorph' (Load i) m = push (fetchMem i $ takeMem m) `mapDS` m
 instMorph' (Push v) m = push v `mapDS` m
+instMorph' Pop m = pop `mapDS` m
 instMorph' (Label _) m = m
 instMorph' (Jump n) m = setCounter (lookupL n $ takeL m) m
 instMorph' (JumpIf n) m
