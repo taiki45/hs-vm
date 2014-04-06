@@ -85,10 +85,16 @@ jumpInstructions = [ Label "main"
 --   add_five(add_three(4))
 functionCallInstructions :: [Instruction]
 functionCallInstructions = [ Label "add_three"
+                           , Store 0
+                           , Pop
+                           , Load 0
                            , Push 3 -- [3,4]
                            , Add -- [7]
                            , Ret
                            , Label "add_five"
+                           , Store 0
+                           , Pop
+                           , Load 0
                            , Push 5 -- [5,7]
                            , Add -- [12]
                            , Ret
@@ -109,31 +115,44 @@ functionCallInstructions = [ Label "add_three"
 --   fib(10) -- shouldBe 55
 fibInstructions :: [Instruction]
 fibInstructions = [ Label "fib"
-                  , Store 0
+                  , Store 0 -- store local var
+                  , Pop
+                  , Load 0 -- set n
                   , Push 0
-                  , Eq
+                  , Eq -- n == 0
                   , Not
                   , JumpIf "fib if2"
+                  , Pop
                   , Push 0
                   , Ret -- return in first body
                   , Label "fib if2"
+                  , Pop -- discard Eq result
+                  , Load 0 -- set n
                   , Push 1
                   , Eq
                   , Not
                   , JumpIf "fib if3"
+                  , Pop -- discard Eq result
                   , Push 1
                   , Ret -- return in second body
                   , Label "fib if3"
+                  , Pop -- discard Eq result
+                  , Load 0
                   , Push 1
                   , Sub
                   , Call "fib"
+                  , Store 1 -- store fib(n - 1) result
+                  , Pop
+                  , Load 0
                   , Push 2
                   , Sub
                   , Call "fib"
+                  , Store 2 -- store fib(n - 2) result
+                  , Pop
+                  , Load 1
+                  , Load 2
                   , Add
                   , Ret
                   , Label "main"
-                  , Push 2
-                  , Store 0
-                  , Pop
+                  , Push 10
                   , Call "fib"] -- shouldBe 55
