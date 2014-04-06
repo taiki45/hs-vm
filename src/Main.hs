@@ -6,9 +6,13 @@ import Parser
 main :: IO ()
 main = do args <- getArgs
           case args of
-              ("run":path:_) -> readFile path >>= run path
-              ("run":_)      -> getContents >>= run "STDIN"
-              _              -> showHelp
+              ("help":_)   -> showHelp
+              ("-h":_)     -> showHelp
+              ("--help":_) -> showHelp
+              (path:_)     -> readFile path >>= run path
+              _            -> if null args
+                                  then getContents >>= run "STDIN"
+                                  else showHelp
 
 run :: FilePath -> String -> IO ()
 run path content = do instructions <- readInstructions path content
@@ -21,4 +25,6 @@ readInstructions path str = case parse instructionsParser path str of
 
 showHelp :: IO ()
 showHelp = do putStrLn "Usage:"
-              putStrLn "    hs-vm run PATH"
+              putStrLn "    hs-vm PATH\n"
+              putStrLn "From STDIN:"
+              putStrLn "    hs-vm"
