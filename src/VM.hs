@@ -13,7 +13,11 @@ import VM.Machine
 import VM.Instruction
 
 runVM :: [Instruction] -> Machine
-runVM is = run (toArray $ instMorph <$> is) (setCounter 0 . prepare is $ initMachine)
+runVM is = run (toArray $ instMorph <$> is) (setMain . setCounter 0 . prepare is $ initMachine)
+
+setMain :: Machine -> Machine
+setMain m = setCounter main m
+        where main = lookupL "main" $ takeL m
 
 run :: Array PC (Machine -> Machine) -> Machine -> Machine
 run is m | end pc = is ! pc $ m

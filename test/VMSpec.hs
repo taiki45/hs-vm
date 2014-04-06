@@ -22,7 +22,8 @@ spec = describe "runVM" $ do
 
 
 simpleInstructions :: [Instruction]
-simpleInstructions = [ Push 3
+simpleInstructions = [ Label "main"
+                     , Push 3
                      , Push 4]
 
 -- test instructions for:
@@ -30,7 +31,8 @@ simpleInstructions = [ Push 3
 --   b = a + 3
 --   b - a
 normalInstructions :: [Instruction]
-normalInstructions = [ Push 3
+normalInstructions = [ Label "main"
+                     , Push 3
                      , Push 4
                      , Add
                      , Store 0
@@ -47,7 +49,8 @@ normalInstructions = [ Push 3
 --   a += 1
 -- a
 jumpInstructions :: [Instruction]
-jumpInstructions = [ Push 0
+jumpInstructions = [ Label "main"
+                   , Push 0
                    , Store 0 -- a = 0
                    , Load 0
                    , Push 10
