@@ -5,7 +5,18 @@ Simple Virtual Machine written in Haskell.
 ## About
 hs-vm is based on a stack machine architecture.
 
-Current instructions are in `src/VM/Instruction.hs`.
-
 ## Status
 experiment phase
+
+## Usage
+hs-vm's instructions are in `src/VM/Instruction.hs`.
+
+All label setting instructions are executed in preprocess phase.
+
+A valid hs-vm program has `main` function. To set main function, use `Label main`.
+
+To define function, use `Label func_name`. To return to calling point, use `Ret`.
+
+Currently hs-vm stack machine memory when calls a function.
+And when returned from function, hs-vm pops back stacked memory.
+This behavior, shounds strange, might be removed.
