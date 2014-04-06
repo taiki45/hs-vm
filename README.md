@@ -9,6 +9,22 @@ hs-vm is based on a stack machine architecture.
 experiment phase
 
 ## Usage
+To run example just:
+
+```
+cabal sandbox init
+cabal configure --enable-tests
+cabal install --enable-tests --only-dependencies
+cabal build
+./dist/build/hs-vm/hs-vm example/fib.hsvm
+```
+
+To test it:
+
+```
+cabal build && cabal test
+```
+
 hs-vm's instructions are in `src/VM/Instruction.hs`.
 
 All label setting instructions are executed in preprocess phase.
