@@ -16,9 +16,8 @@ runVM :: [Instruction] -> Machine
 runVM is = run (toArray $ instMorph <$> is) (setCounter 0 . prepare is $ initMachine)
 
 run :: Array PC (Machine -> Machine) -> Machine -> Machine
-run is m
-    | end pc = is ! pc $ m
-    | otherwise = run is (is ! pc $ m)
+run is m | end pc = is ! pc $ m
+         | otherwise = run is (is ! pc $ m)
         where pc = fromInteger . takePC $ m
               end = ((snd . bounds) is - 1 ==)
 
