@@ -3,6 +3,7 @@ module VM.Machine
     ( Machine (..)
     , mapDS
     , mapMem
+    , mapLDS
     , mapLabels
     , cup
     , setCounter
@@ -24,6 +25,8 @@ module VM.Machine
     , initMem
     , PC
     , inc
+    , pushL
+    , popL
     , LabelName
     , Labels
     , insertL
@@ -42,7 +45,7 @@ data Machine = M { takeDS :: DataStack
                  , takeMem :: Mem
                  , takePC :: PC
                  , takeCS :: CS
-                 , takeAS :: ArgStack
+                 , takeLDS :: LocalDataStack
                  , takeL :: Labels }
              deriving Show
 
@@ -51,6 +54,9 @@ f `mapDS` (M ds m c cs as l) = M (f ds) m c cs as l
 
 mapMem :: (Mem -> Mem) -> Machine -> Machine
 f `mapMem` (M ds m c cs as l) = M ds (f m) c cs as l
+
+mapLDS :: (LocalDataStack -> LocalDataStack) -> Machine -> Machine
+f `mapLDS` (M ds m c cs lds l) = M ds m c cs (f lds) l
 
 mapLabels :: (Labels -> Labels) -> Machine -> Machine
 f `mapLabels` (M ds m c cs as l) = M ds m c cs as (f l)
@@ -62,14 +68,14 @@ setCounter :: PC -> Machine -> Machine
 setCounter c (M ds m _ cs as l) = M ds m c cs as l
 
 pushCS :: PC -> Machine -> Machine
-pushCS c (M ds m pc cs as l) = M initDS m pc ((c,ds):cs) as l
+pushCS c (M ds m pc cs lds l) = M ds m pc ((c,lds):cs) initLDS l
 
 popCS :: Machine -> (PC, Machine)
-popCS (M _ m pc ((c,ds):cs) as l) = (c,M ds m pc cs as l)
+popCS (M ds m pc ((c,lds):cs) _ l) = (c,M ds m pc cs lds l)
 
 -- initialize machine with empty value
 initMachine :: Machine
-initMachine = M initDS initMem initPC initCS initAS initLabels
+initMachine = M initDS initMem initPC initCS initLDS initLabels
 
 takeResult :: Machine -> Value
 takeResult m = fetch $ takeDS m
@@ -130,16 +136,22 @@ initPC = 0
 
 
 -- Call stack
-type CS = [(PC, DataStack)]
+type CS = [(PC, LocalDataStack)]
 
 initCS :: CS
 initCS = []
 
--- Argument stack
-type ArgStack = [Value]
+-- Local stack
+type LocalDataStack = [Value]
 
-initAS :: ArgStack
-initAS = []
+pushL :: Value -> LocalDataStack -> LocalDataStack
+pushL v lds = v:lds
+
+popL :: LocalDataStack -> (Value, LocalDataStack)
+popL (v:lds) = (v,lds)
+
+initLDS :: LocalDataStack
+initLDS = []
 
 
 -- Label set

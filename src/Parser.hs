@@ -25,6 +25,8 @@ instruction = Just <$> choice (try <$> [ add
                                        , push
                                        , pop
                                        , dup
+                                       , pushl
+                                       , popl
                                        , label
                                        , jumpIf
                                        , jump
@@ -69,6 +71,12 @@ pop = Pop <$ string "Pop"
 
 dup :: Parser Instruction
 dup = Dup <$ string "Dup"
+
+pushl :: Parser Instruction
+pushl = PushLocal <$ string "PushLocal"
+
+popl :: Parser Instruction
+popl = PopLocal <$ string "PopLocal"
 
 label :: Parser Instruction
 label = Label <$> instWithString "Label"
