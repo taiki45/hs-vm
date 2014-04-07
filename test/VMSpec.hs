@@ -56,24 +56,17 @@ normalInstructions = [ Label "main"
 -- a
 jumpInstructions :: [Instruction]
 jumpInstructions = [ Label "main"
-                   , Push 0
-                   , Store 0 -- a = 0
+                   , Push 0 -- [0]
                    , Label "while start"
-                   , Load 0
-                   , Push 10
+                   , Dup -- [0,0]
+                   , Push 10 -- [10,0,0]
                    , Lt -- a < 10
-                   , Not
-                   , JumpIf "while end"
-                   , Load 0
-                   , Push 1
-                   , Add
-                   , Store 0 -- a += 1
-                   , Load 0
-                   , Push 10
-                   , Lt
-                   , JumpIf "while start"
-                   , Label "while end"
-                   , Load 0] -- a will be 10
+                   , Not -- [1,0]
+                   , JumpIf "while end" -- [0]
+                   , Push 1 -- [1,0]
+                   , Add -- [1]
+                   , Jump "while start"
+                   , Label "while end" ] -- a will be 10
 
 -- def add_three(x)
 --   x + 3
