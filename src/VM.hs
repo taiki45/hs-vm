@@ -7,6 +7,8 @@ module VM
 
 import Control.Applicative ((<$>))
 import Data.Array
+import Data.Char
+import Data.Maybe
 import Data.Monoid
 import Data.Foldable (foldMap)
 
@@ -33,16 +35,25 @@ toArray :: [a] -> Array PC a
 toArray ls = listArray (0,toInteger $ length ls) ls
 
 testRunVM :: [Instruction] -> IO Machine
-testRunVM is = testRun (toArray $ instMorph <$> is) (return . setMain . setCounter 0 . prepare is $ initMachine)
+testRunVM is = testRun (toArray $ instMorph <$> is) (setMain . setCounter 0 . prepare is $ initMachine)
 
-testRun :: Array PC (Machine -> Machine) -> IO Machine -> IO Machine
-testRun is m = do m' <- m
-                  let pc = fromInteger . takePC $ m'
-                      end = ((snd . bounds) is ==)
-                  input <- runDebugger pc m'
-                  if input == "exit" || end pc
-                    then m
-                    else testRun is (return (is ! pc $ m'))
+testRun :: Array PC (Machine -> Machine) -> Machine -> IO Machine
+testRun = testRun' Nothing
+
+-- TODO: refactoring
+testRun' :: Maybe PC -> Array PC (Machine -> Machine) -> Machine -> IO Machine
+testRun' bp is m = do let pc = fromInteger . takePC $ m
+                          end = ((snd . bounds) is ==)
+                      input <- if isNothing bp || bp == Just pc
+                                   then runDebugger pc m
+                                   else return "next"
+                      if input == "exit" || end pc
+                        then return m
+                        else if bp == Just pc || (isNothing bp && input == "next")
+                                 then testRun' Nothing is (is ! pc $ m)
+                                 else if any isNumber input
+                                    then testRun' (Just . read $ filter isNumber input) is (is ! pc $ m)
+                                    else testRun' bp is (is ! pc $ m)
 
 runDebugger :: PC -> Machine -> IO String
 runDebugger pc m = do putStrLn $ "[DEUBG] Now in " ++ show pc ++ " | ds: " ++ show ds ++ " | input command"
@@ -55,8 +66,9 @@ runDebugger pc m = do putStrLn $ "[DEUBG] Now in " ++ show pc ++ " | ds: " ++ sh
                           "print cs" -> print (takeCS m) >> runDebugger pc m
                           "print lds" -> print (takeLDS m) >> runDebugger pc m
                           "print labels" -> print (takeL m) >> runDebugger pc m
-                          "next" -> return ""
+                          "next" -> return "next"
                           "" -> return ""
                           "exit" -> return "exit"
+                          ('s':'e':'t':'b':'p':bp) -> return bp
                           _ -> runDebugger pc m
                 where ds = takeDS m
