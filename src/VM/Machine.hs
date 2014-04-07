@@ -16,7 +16,7 @@ module VM.Machine
     , fetch
     , appBinOp
     , appF
-    , initDataStack
+    , initDS
     , Mem
     , Adress
     , updateMem
@@ -62,14 +62,14 @@ setCounter :: PC -> Machine -> Machine
 setCounter c (M ds m _ cs as l) = M ds m c cs as l
 
 pushCS :: PC -> Machine -> Machine
-pushCS c (M ds m pc cs as l) = M initDataStack m pc ((c,ds):cs) as l
+pushCS c (M ds m pc cs as l) = M initDS m pc ((c,ds):cs) as l
 
 popCS :: Machine -> (PC, Machine)
 popCS (M _ m pc ((c,ds):cs) as l) = (c,M ds m pc cs as l)
 
 -- initialize machine with empty value
 initMachine :: Machine
-initMachine = M initDataStack initMem initPC initCS initAS initLabels
+initMachine = M initDS initMem initPC initCS initAS initLabels
 
 takeResult :: Machine -> Value
 takeResult m = fetch $ takeDS m
@@ -97,8 +97,8 @@ appF = fstmap
 fstmap :: (a -> a) -> [a] -> [a]
 fstmap f (x:xs) = f x : xs
 
-initDataStack :: DataStack
-initDataStack = []
+initDS :: DataStack
+initDS = []
 
 
 -- Memory and functions
