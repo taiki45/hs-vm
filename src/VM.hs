@@ -53,6 +53,7 @@ runDebugger pc m = do putStrLn $ "[DEUBG] Now in " ++ show pc ++ " | ds: " ++ sh
                           "print ds" -> print (takeDS m) >> runDebugger pc m
                           "print mem" -> print (takeMem m) >> runDebugger pc m
                           "print cs" -> print (takeCS m) >> runDebugger pc m
+                          "print lds" -> print (takeLDS m) >> runDebugger pc m
                           "print labels" -> print (takeL m) >> runDebugger pc m
                           "next" -> return ""
                           "" -> return ""
