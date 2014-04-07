@@ -22,11 +22,11 @@ instruction = Just <$> choice (try <$> [ add
                                        , not'
                                        , store
                                        , load
+                                       , pushl
+                                       , popl
                                        , push
                                        , pop
                                        , dup
-                                       , pushl
-                                       , popl
                                        , label
                                        , jumpIf
                                        , jump

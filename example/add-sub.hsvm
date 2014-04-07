@@ -4,24 +4,11 @@
 #   b - a
 Label main
 Push 3
-# (0,3)
 Push 4
-# (3,4)
 Add
-# (7,0)
-Store 0
-# (7,0)
-Load 0
-# (0,7)
+Dup
+PushLocal
 Push 3
-# (7,3)
 Add
-# (10,0)
-Store 1
-# (10,0)
-Load 1
-# (0,10)
-Load 0
-# (10,7)
+PopLocal
 Sub
-# (3,0)
