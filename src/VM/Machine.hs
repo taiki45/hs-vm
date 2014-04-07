@@ -42,33 +42,34 @@ data Machine = M { takeDS :: DataStack
                  , takeMem :: Mem
                  , takePC :: PC
                  , takeCS :: CS
+                 , takeAS :: ArgStack
                  , takeL :: Labels }
              deriving Show
 
 mapDS :: (DataStack -> DataStack) -> Machine -> Machine
-f `mapDS` (M ds m c cs l) = M (f ds) m c cs l
+f `mapDS` (M ds m c cs as l) = M (f ds) m c cs as l
 
 mapMem :: (Mem -> Mem) -> Machine -> Machine
-f `mapMem` (M ds m c cs l) = M ds (f m) c cs l
+f `mapMem` (M ds m c cs as l) = M ds (f m) c cs as l
 
 mapLabels :: (Labels -> Labels) -> Machine -> Machine
-f `mapLabels` (M ds m c cs l) = M ds m c cs (f l)
+f `mapLabels` (M ds m c cs as l) = M ds m c cs as (f l)
 
 cup :: Machine -> Machine
-cup (M ds m c cs l) = M ds m (inc c) cs l
+cup (M ds m c cs as l) = M ds m (inc c) cs as l
 
 setCounter :: PC -> Machine -> Machine
-setCounter c (M ds m _ cs l) = M ds m c cs l
+setCounter c (M ds m _ cs as l) = M ds m c cs as l
 
 pushCS :: PC -> Machine -> Machine
-pushCS c (M ds m pc cs l) = M ds initMem pc ((c,m):cs) l
+pushCS c (M ds m pc cs as l) = M ds initMem pc ((c,m):cs) as l
 
 popCS :: Machine -> (PC, Machine)
-popCS (M ds _ pc ((c,m):cs) l) = (c,M ds m pc cs l)
+popCS (M ds _ pc ((c,m):cs) as l) = (c,M ds m pc cs as l)
 
 -- initialize machine with empty value
 initMachine :: Machine
-initMachine = M initDataStack initMem initPC initCS initLabels
+initMachine = M initDataStack initMem initPC initCS initAS initLabels
 
 takeResult :: Machine -> Value
 takeResult m = fetch $ takeDS m
@@ -133,6 +134,12 @@ type CS = [(PC, Mem)]
 
 initCS :: CS
 initCS = []
+
+-- Argument stack
+type ArgStack = [Value]
+
+initAS :: ArgStack
+initAS = []
 
 
 -- Label set

@@ -63,7 +63,7 @@ instMorph' (Jump n) m = setCounter (lookupL n $ takeL m) m
 instMorph' (JumpIf n) m
     | fetch (takeDS m) == 0 = cup poped
     | otherwise             = setCounter (lookupL n $ takeL m) poped
-    where poped = pop `mapDS` m
+    where poped = pop `mapDS` m -- pop condition value
 instMorph' (Call n) m = setCounter target . pushCS current $ m
         where current = takePC m
               target = lookupL n $ takeL m
