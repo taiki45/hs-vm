@@ -38,12 +38,11 @@ import Data.Tuple (swap)
 
 
 -- Machine and functions
-data Machine = M
-                { takeDS :: DataStack
-                , takeMem :: Mem
-                , takePC :: PC
-                , takeCS :: CS
-                , takeL :: Labels }
+data Machine = M { takeDS :: DataStack
+                 , takeMem :: Mem
+                 , takePC :: PC
+                 , takeCS :: CS
+                 , takeL :: Labels }
              deriving Show
 
 mapDS :: (DataStack -> DataStack) -> Machine -> Machine

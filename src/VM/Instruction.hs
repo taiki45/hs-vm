@@ -11,24 +11,25 @@ import VM.Machine
 --   Push 4
 --   Add
 -}
-data Instruction = Add -- Add data stack values.
-                 | Sub -- Subtract data stack values.
-                 | Lt -- first data stack value is less than the second value.
-                 | Le -- first data stack value <= second data stack value.
-                 | Gt -- first data stack value is greater than the second data stack value.
-                 | Ge -- first data stack value >= second data stack value.
-                 | Eq -- Equal left data stack value and second value.
-                 | Not -- Turn over bool. non-zero goes 0, 0 goes 1.
-                 | Store Adress -- Store data stack value to memory.
-                 | Load Adress -- Push memory value to data stack.
-                 | Push Value -- Push constant value to data stack.
-                 | Pop -- Pop and discard value from data stack.
-                 | Label LabelName -- Set label and save current position.
-                 | Jump LabelName -- Unconditional jump.
-                 | JumpIf LabelName -- Jump if first stack is non-zero.
-                 | Call LabelName -- Store current PC and jump to function.
-                 | Ret -- Return from calling point.
-                 deriving (Show, Read, Eq)
+data Instruction
+    = Add -- Add data stack values.
+    | Sub -- Subtract data stack values.
+    | Lt -- first data stack value is less than the second value.
+    | Le -- first data stack value <= second data stack value.
+    | Gt -- first data stack value is greater than the second data stack value.
+    | Ge -- first data stack value >= second data stack value.
+    | Eq -- Equal left data stack value and second value.
+    | Not -- Turn over bool. non-zero goes 0, 0 goes 1.
+    | Store Adress -- Store data stack value to memory.
+    | Load Adress -- Push memory value to data stack.
+    | Push Value -- Push constant value to data stack.
+    | Pop -- Pop and discard value from data stack.
+    | Label LabelName -- Set label and save current position.
+    | Jump LabelName -- Unconditional jump.
+    | JumpIf LabelName -- Jump if first stack is non-zero. Then discatd value.
+    | Call LabelName -- Store current PC and jump to function.
+    | Ret -- Return from calling point.
+    deriving (Show, Read, Eq)
 
 -- Don't count up PC if jump instructions are given
 instMorph :: Instruction -> Machine -> Machine
