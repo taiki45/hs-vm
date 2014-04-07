@@ -24,6 +24,7 @@ data Instruction
     | Load Adress -- Push memory value to data stack.
     | Push Value -- Push constant value to data stack.
     | Pop -- Pop and discard value from data stack.
+    | Dup -- Duplicate top value in data stack.
     | Label LabelName -- Set label and save current position.
     | Jump LabelName -- Unconditional jump.
     | JumpIf LabelName -- Jump if first stack is non-zero. Then discatd value.
@@ -58,6 +59,7 @@ instMorph' (Store i) m = updateMem i (fetch $ takeDS m) `mapMem` m
 instMorph' (Load i) m = push (fetchMem i $ takeMem m) `mapDS` m
 instMorph' (Push v) m = push v `mapDS` m
 instMorph' Pop m = pop `mapDS` m
+instMorph' Dup m = push (fetch $ takeDS m) `mapDS` m
 instMorph' (Label _) m = m
 instMorph' (Jump n) m = setCounter (lookupL n $ takeL m) m
 instMorph' (JumpIf n) m
