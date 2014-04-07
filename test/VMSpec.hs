@@ -78,16 +78,10 @@ jumpInstructions = [ Label "main"
 --   add_five(add_three(4))
 functionCallInstructions :: [Instruction]
 functionCallInstructions = [ Label "add_three"
-                           , Store 0
-                           , Pop
-                           , Load 0
                            , Push 3 -- [3,4]
                            , Add -- [7]
                            , Ret
                            , Label "add_five"
-                           , Store 0
-                           , Pop
-                           , Load 0
                            , Push 5 -- [5,7]
                            , Add -- [12]
                            , Ret
@@ -108,39 +102,34 @@ functionCallInstructions = [ Label "add_three"
 --   fib(10) -- shouldBe 55
 fibInstructions :: [Instruction]
 fibInstructions = [ Label "fib"
-                  , Store 0 -- store local var
+                  , Dup -- [10,10]
+                  , Push 0 -- [0,10,10]
+                  , Eq -- n == 0 -- [0,10]
+                  , Not -- [1,10]
+                  , JumpIf "fib if2" -- [10]
                   , Pop
-                  , Load 0 -- set n
-                  , Push 0
-                  , Eq -- n == 0
-                  , Not
-                  , JumpIf "fib if2"
-                  , Push 0
+                  , Push 0 -- [0]
                   , Ret -- return in first body
-                  , Label "fib if2"
-                  , Load 0 -- set n
-                  , Push 1
-                  , Eq
-                  , Not
-                  , JumpIf "fib if3"
-                  , Push 1
+                  , Label "fib if2" -- [10]
+                  , Dup -- [10,10]
+                  , Push 1 -- [1,10,10]
+                  , Eq -- [0,10]
+                  , Not -- [1,10]
+                  , JumpIf "fib if3" -- [10]
+                  , Pop
+                  , Push 1 -- [1]
                   , Ret -- return in second body
-                  , Label "fib if3"
-                  , Load 0
-                  , Push 1
-                  , Sub
-                  , Call "fib"
-                  , Store 1 -- store fib(n - 1) result
-                  , Pop
-                  , Load 0
-                  , Push 2
-                  , Sub
-                  , Call "fib"
-                  , Store 2 -- store fib(n - 2) result
-                  , Pop
-                  , Load 1
-                  , Load 2
-                  , Add
+                  , Label "fib if3" -- [10]
+                  , Dup -- [10,10]
+                  , Push 1 -- [1,10,10]
+                  , Sub -- [9,10]
+                  , Call "fib" -- back with [?,10]
+                  , PushLocal -- [10] and [?]
+                  , Push 2 -- [2,10]
+                  , Sub -- [8]
+                  , Call "fib" -- back with [?]
+                  , PopLocal -- -- [?,?]
+                  , Add -- [55]
                   , Ret
                   , Label "main"
                   , Push 10
