@@ -62,10 +62,10 @@ setCounter :: PC -> Machine -> Machine
 setCounter c (M ds m _ cs as l) = M ds m c cs as l
 
 pushCS :: PC -> Machine -> Machine
-pushCS c (M ds m pc cs as l) = M ds initMem pc ((c,m):cs) as l
+pushCS c (M ds m pc cs as l) = M initDataStack m pc ((c,ds):cs) as l
 
 popCS :: Machine -> (PC, Machine)
-popCS (M ds _ pc ((c,m):cs) as l) = (c,M ds m pc cs as l)
+popCS (M _ m pc ((c,ds):cs) as l) = (c,M ds m pc cs as l)
 
 -- initialize machine with empty value
 initMachine :: Machine
@@ -130,7 +130,7 @@ initPC = 0
 
 
 -- Call stack
-type CS = [(PC, Mem)]
+type CS = [(PC, DataStack)]
 
 initCS :: CS
 initCS = []
