@@ -33,6 +33,5 @@ A valid hs-vm program has `main` function. To set main function, use `Label main
 
 To define function, use `Label func_name`. To return to calling point, use `Ret`.
 
-Currently hs-vm stack machine memory when calls a function.
-And when returned from function, hs-vm pops back stacked memory.
-This behavior, shounds strange, might be removed.
+hs-vm stacks Local Data Stack when calls a function.
+And when returned from function, hs-vm pops back stacked one.
