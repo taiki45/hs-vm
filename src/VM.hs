@@ -34,6 +34,9 @@ prepare is = appEndo . getDual $ foldMap (Dual . Endo . setLabel) is
 toArray :: [a] -> Array PC a
 toArray ls = listArray (0,toInteger $ length ls) ls
 
+
+--- Bellow is for debugging ---
+
 testRunVM :: [Instruction] -> IO Machine
 testRunVM is = testRun (toArray $ instMorph <$> is) (setMain . setCounter 0 . prepare is $ initMachine)
 
