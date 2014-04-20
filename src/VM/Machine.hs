@@ -72,6 +72,7 @@ pushCS c (M ds m pc cs lds l) = M ds m pc ((c,lds):cs) initLDS l
 
 popCS :: Machine -> (PC, Machine)
 popCS (M ds m pc ((c,lds):cs) _ l) = (c,M ds m pc cs lds l)
+popCS (M _ _ _ [] _ _) = error "popCS"
 
 -- initialize machine with empty value
 initMachine :: Machine
@@ -93,15 +94,18 @@ pop _ = error "in pop"
 
 fetch :: DataStack -> Value
 fetch (v:_) = v
+fetch [] = error "fetch"
 
 appBinOp :: (Value -> Value -> Value) -> DataStack -> DataStack
 appBinOp op (w:v:xs) = op v w : xs
+appBinOp _ _ = error "Stack is empty: appBinOp"
 
 appF :: (Value -> Value) -> DataStack -> DataStack
 appF = fstmap
 
 fstmap :: (a -> a) -> [a] -> [a]
 fstmap f (x:xs) = f x : xs
+fstmap _ _ = error "empty Stack"
 
 initDS :: DataStack
 initDS = []
@@ -149,6 +153,7 @@ pushL v lds = v:lds
 
 popL :: LocalDataStack -> (Value, LocalDataStack)
 popL (v:lds) = (v,lds)
+popL _ = error "empty Stack"
 
 initLDS :: LocalDataStack
 initLDS = []
